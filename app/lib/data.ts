@@ -4,8 +4,8 @@ import { use } from "react";
 const sql = neon(process.env.DATABASE_URL as string);
 
 export type User = {
-    id: Number,
-    name: String
+    id: number,
+    name: string
 }
 
 export type LedgerItem = {
@@ -94,4 +94,14 @@ export async function selectPayer(participants: Array<string>) {
 
 
 
+}
+
+export async function getUsersPaginated(page: number) {
+
+    const users = await sql.query("SELECT * FROM users ORDER BY id LIMIT 10 OFFSET $1", [page]);
+    const usersList = users as User[];
+    const pageQuery = await sql.query("SELECT COUNT(*) FROM users")
+    const totalPages = Math.ceil(Number(pageQuery[0].count)/10)
+
+    return {usersList, totalPages}
 }

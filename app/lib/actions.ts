@@ -1,9 +1,10 @@
 'use server'
 
 import { neon } from '@neondatabase/serverless';
-import {z} from 'zod';
+import {number, z} from 'zod';
 import { selectPayer } from './data';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
 const FormSchema = z.object({
@@ -45,3 +46,23 @@ export async function getPayingPerson(formData: FormData) {
     console.log(payer)
     redirect(`/display/${payer}`)
 }
+
+
+export async function deleteUser(id: number) {
+    await sql.query("DELETE FROM users WHERE id = $1", [id])
+}
+
+const EditUserSchema = z.object({
+    name: z.string()
+})
+
+export async function editUser(id: number, formData: FormData) {
+    const {name} = EditUserSchema.parse({
+        name: formData.get("name")
+    })
+    await sql.query("UPDATE users SET name = $1 WHERE id= $2", [name, id])
+
+    revalidatePath("/user")
+    redirect("/user")
+}
+

@@ -7,6 +7,8 @@ export function middleware(req: NextRequest) {
     const isLoggedIn = token === process.env.SHARED_SECRET;
     console.log(process.env.SHARED_SECRET)
 
+    return NextResponse.next()
+
     const { pathname } = req.nextUrl;
 
     const isPublicPath = pathname.startsWith('/login') || pathname.startsWith('/api')
