@@ -8,11 +8,11 @@ import { checkAuth } from "../lib/auth";
 export default async function Page({
     searchParams,
 }: {
-    searchParams: { page?: string };
+    searchParams?: { page?: string };
 }) {
     await checkAuth();
-    const params = await searchParams;
-    const page = await parseInt(params.page || "1", 10);
+    const params = searchParams;
+    const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/users?page=1");
 
     const testFunc = async (id: number) => {
