@@ -5,13 +5,13 @@ import { User } from "@/app/lib/data";
 import { getUsersPaginated } from "../lib/data";
 import { checkAuth } from "../lib/auth";
 
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: { page?: string };
-}) {
+type PageProps = {
+    searchParams: Promise<{ page?: string }>;
+};
+
+export default async function Page({ searchParams }: PageProps) {
     await checkAuth();
-    const params = searchParams;
+    const params = await searchParams;
     const page = parseInt(params?.page || "1", 10);
     if (isNaN(page) || page < 1) redirect("/users?page=1");
 
