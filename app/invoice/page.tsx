@@ -1,3 +1,6 @@
+import { getLedgerItemWithNames } from "../lib/data";
+
 export default function Page() {
-  return <div>Ledger management stuff here</div>;
+    getLedgerItemWithNames(1);
+    return <div>Ledger management stuff here</div>;
 }

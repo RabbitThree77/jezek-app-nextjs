@@ -5,6 +5,7 @@ import {number, z} from 'zod';
 import { selectPayer } from './data';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { title } from 'process';
 
 
 const FormSchema = z.object({
@@ -15,6 +16,12 @@ const FormSchema = z.object({
 const InvoiceFormSchema = z.object({
     giver_id: z.coerce.number(),
     reciever_id: z.coerce.number()
+})
+
+const CreateLunchShema = z.object({
+    payer_id: z.coerce.number(),
+    atendees_ids: z.array(z.coerce.number()),
+    title: z.string()
 })
 
 const CreateUser = FormSchema.omit({id: true})
@@ -42,9 +49,14 @@ export async function createInvoiceItem(formData: FormData) {
 
 export async function getPayingPerson(formData: FormData) {
     const users = formData.getAll("users")
-    const payer = await selectPayer(users as Array<string>)
+    const {payer, atendees} = await selectPayer(users as Array<string>)
+    const params = new URLSearchParams
+    params.append("payer", payer)
+    for (let i of atendees) {
+        params.append("atendees", i.id.toString())
+    }
     console.log(payer)
-    redirect(`/display/${payer}`)
+    redirect(`/generate?${params.toString()}`)
 }
 
 
@@ -66,3 +78,45 @@ export async function editUser(id: number, formData: FormData) {
     redirect("/user")
 }
 
+export async function createLunch(formData: FormData) {
+    const {payer_id, atendees_ids, title} = CreateLunchShema.parse({
+        payer_id: formData.get("payerId"),
+        atendees_ids: formData.getAll("atendeesIds"),
+        title: formData.get("title")
+    })
+
+    await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3)", [payer_id, atendees_ids, title])
+}
+
+const exectutionSchema = z.object({
+    payer_id: z.coerce.number(),
+    title: z.string()
+})
+
+
+/** pass the attendees with the one who is paying*/
+export async function executeLunchCreate(atendees: number[], formdata: FormData) {
+    const {payer_id, title} = exectutionSchema.parse({
+        payer_id: formdata.get("payerId"),
+        title: formdata.get("title")
+    })
+    const atendeesNoPayer = [...atendees]
+    const indx = atendeesNoPayer.indexOf(payer_id)
+    if (indx > -1) {
+      atendeesNoPayer.splice(indx, 1);
+    }
+
+    const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3) RETURNING id", [payer_id, atendees, title])) as unknown as number)
+    console.log("lunch_id: ", lunch_id)
+    for (const id of atendees) {
+        console.log(typeof id)
+        console.log(typeof payer_id)
+        if (id == payer_id) {
+            console.log("we skipping it today bitch")
+            continue
+        }
+        console.log(`the full list is: ${atendees}`)
+        await sql.query("INSERT INTO ledger (giver_id, reciever_id, lunch_id) VALUES ($1, $2, $3)", [payer_id, id, lunch_id[0].id])
+    }
+    // redirect('/invoice/selection')
+}

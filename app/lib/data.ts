@@ -9,8 +9,17 @@ export type User = {
 }
 
 export type LedgerItem = {
+    id: number,
     giver_id: Number,
     reciever_id: Number
+}
+
+export type LedgerItemNames = {
+  id: number,
+  giver_id: number,
+  reciever_id: number,
+  giver_name: string,
+  reciver_name: String
 }
 
 export async function getAllUsers(): Promise<Array<User>> {
@@ -47,6 +56,12 @@ export async function getUserById(id: number) {
     return users[0]
 }
 
+export async function getUserByName(name: string) {
+  const resp = await sql.query("SELECT * FROM users WHERE name = $1", [name])
+  const users = resp as User[]
+  return users[0]
+}
+
 
 export async function selectPayer(participants: Array<string>) {
 
@@ -63,10 +78,19 @@ export async function selectPayer(participants: Array<string>) {
 
     const resp2 = await sql.query(query2, userIds) 
     const ledgerItems = resp2 as Array<LedgerItem>
+    if (ledgerItems.length < 1) {
+      const payer = participants[Math.floor(Math.random() * participants.length)]
+      const atendees = await Promise.all(participants.map(u => getUserByName(u)))
+      return {payer: payer, atendees: atendees}
+    }
     console.log(users)
 
     let givers: { [key: string]: number} = {}
     let recievers: { [key: string]: number} = {}
+
+    console.log("givers: ", givers)
+    console.log("recievers: ", recievers)
+    console.log("ledgerItems: ", ledgerItems)
 
     for (let item of ledgerItems) {
         givers[item.giver_id.toString()] = (givers[item.giver_id.toString()] || 0) + 1;
@@ -87,10 +111,16 @@ export async function selectPayer(participants: Array<string>) {
     console.log(result)
     console.log(`the id: ${payerId}`)
 
-    
-    
+    const payingUsername = (await getUserById(Number(payerId))).name
 
-    return (await getUserById(Number(payerId))).name
+    // const participantsNoPayer = [...participants]
+    // const indx = participantsNoPayer.indexOf(payingUsername)
+    // if (indx > -1) {
+    //   participantsNoPayer.splice(indx, 1);
+    // }
+    const atendees = await Promise.all(participants.map(u => getUserByName(u)))
+
+    return {payer: (await getUserById(Number(payerId))).name, atendees: atendees}
 
 
 
@@ -105,3 +135,10 @@ export async function getUsersPaginated(page: number) {
 
     return {usersList, totalPages}
 }
+
+export async function getLedgerItemWithNames(id: number) {
+  const item = await sql.query("SELECT i.*, u1.name AS giver_name, u2.name AS reciever_name FROM ledger i LEFT JOIN users u1 ON i.giver_id = u1.id LEFT JOIN users u2 ON i.reciever_id = u2.id WHERE i.id = $1", [id])
+  return item[0]
+}
+
+
