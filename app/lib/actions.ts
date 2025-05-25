@@ -106,7 +106,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
       atendeesNoPayer.splice(indx, 1);
     }
 
-    const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3) RETURNING id", [payer_id, atendees, title])) as unknown as number)
+    const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3) RETURNING id", [payer_id, atendees, title])) as unknown as [{id: number}])
     console.log("lunch_id: ", lunch_id)
     for (const id of atendees) {
         console.log(typeof id)
