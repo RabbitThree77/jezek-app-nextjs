@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { checkAuth } from "../lib/auth";
 import { getLunchesPaginated, Lunch } from "../lib/data";
 import { DisplayCard } from "../ui/DisplayCard";
-import deleteLunch from "../lib/actions";
+import { deleteLunch } from "../lib/actions";
 import Pagination from "../ui/Pagination";
 
 export default async function Page({

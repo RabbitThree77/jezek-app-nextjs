@@ -1,7 +1,7 @@
 'use server'
 
 import { neon } from '@neondatabase/serverless';
-import {number, z} from 'zod';
+import {number, string, z} from 'zod';
 import { selectPayer } from './data';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
@@ -121,6 +121,13 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
     // redirect('/invoice/selection')
 }
 
-export default async function deleteLunch(id: number) {
+export async function deleteLunch(id: number) {
     await sql.query("DELETE FROM lunches WHERE id= $1", [id])
+}
+
+
+
+export async function editLunch(id: number) {
+    await deleteLunch(id)
+    redirect("invoice/selection")
 }
