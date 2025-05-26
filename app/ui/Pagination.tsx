@@ -12,7 +12,7 @@ export default function Pagination({
     console.log(page);
     console.log(totalPages);
     return (
-        <div>
+        <div className="w-full flex justify-center">
             {page > 1 ? (
                 <Link href={`?page=${page - 1}`}>Back</Link>
             ) : (
@@ -23,6 +23,7 @@ export default function Pagination({
                     Back
                 </Link>
             )}
+            <p className="pl-3 pr-3">{page}</p>
             {page < totalPages ? (
                 <Link href={`?page=${page + 1}`}>Next</Link>
             ) : (

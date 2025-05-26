@@ -21,7 +21,6 @@ export default async function Page({
 
     return (
         <div className="m-4">
-            <h1>{page}</h1>
             {lunchList.map((lunch: Lunch) => (
                 <DisplayCard
                     key={lunch.id}
