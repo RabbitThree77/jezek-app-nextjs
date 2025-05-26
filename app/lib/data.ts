@@ -22,6 +22,13 @@ export type LedgerItemNames = {
   reciver_name: String
 }
 
+export type Lunch = {
+  id: number,
+  people_ids: number[],
+  title: string,
+  payer_id: number
+}
+
 export async function getAllUsers(): Promise<Array<User>> {
     const resp = await sql.query("SELECT * FROM users");
     console.log(resp)
@@ -134,6 +141,16 @@ export async function getUsersPaginated(page: number) {
     const totalPages = Math.ceil(Number(pageQuery[0].count)/10)
 
     return {usersList, totalPages}
+}
+
+export async function getLunchesPaginated(page: number) {
+  const lunches = await sql.query("SELECT * FROM lunches ORDER BY id LIMIT 10 OFFSET $1", [(page - 1) * 10])
+  const lunchList = lunches as Lunch[]
+  const pageQuery = await sql.query("SELECT COUNT(*) FROM lunches")
+  console.log("pageQuery: ", pageQuery)
+  const totalPages = Math.ceil(Number(pageQuery[0].count)/10)
+  console.log(totalPages)
+  return {lunchList, totalPages}
 }
 
 export async function getLedgerItemWithNames(id: number) {
