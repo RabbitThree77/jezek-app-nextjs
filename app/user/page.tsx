@@ -39,12 +39,6 @@ export default async function Page({ searchParams }: PageProps) {
                     deleteFunction={deleteUser}
                 ></DisplayCard>
             ))}
-            <DisplayCard
-                id={1}
-                text="john"
-                editRoute="/user/edit"
-                deleteFunction={deleteUser}
-            ></DisplayCard>
             <Pagination page={page} totalPages={totalPages} />
         </div>
     );
