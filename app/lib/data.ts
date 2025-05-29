@@ -135,7 +135,7 @@ export async function selectPayer(participants: Array<string>) {
 
 export async function getUsersPaginated(page: number) {
 
-    const users = await sql.query("SELECT * FROM users ORDER BY id LIMIT 10 OFFSET $1", [(page - 1) * 10]);
+    const users = await sql.query("SELECT * FROM users ORDER BY id DESC LIMIT 10 OFFSET $1", [(page - 1) * 10]);
     const usersList = users as User[];
     const pageQuery = await sql.query("SELECT COUNT(*) FROM users")
     const totalPages = Math.ceil(Number(pageQuery[0].count)/10)
@@ -144,7 +144,7 @@ export async function getUsersPaginated(page: number) {
 }
 
 export async function getLunchesPaginated(page: number) {
-  const lunches = await sql.query("SELECT * FROM lunches ORDER BY id LIMIT 10 OFFSET $1", [(page - 1) * 10])
+  const lunches = await sql.query("SELECT * FROM lunches ORDER BY id DESC LIMIT 10 OFFSET $1", [(page - 1) * 10])
   const lunchList = lunches as Lunch[]
   const pageQuery = await sql.query("SELECT COUNT(*) FROM lunches")
   console.log("pageQuery: ", pageQuery)
