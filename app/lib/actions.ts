@@ -121,6 +121,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
     // redirect('/invoice/selection')
 }
 
+
 export async function deleteLunch(id: number) {
     await sql.query("DELETE FROM lunches WHERE id= $1", [id])
 }
