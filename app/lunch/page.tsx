@@ -6,6 +6,7 @@ import { DisplayCard } from "../ui/DisplayCard";
 import { deleteLunch } from "../lib/actions";
 
 import Pagination from "../ui/Pagination";
+import AddButton from "../ui/AddButton";
 
 export default async function Page({
     searchParams,
@@ -23,6 +24,11 @@ export default async function Page({
 
     return (
         <div className="m-4">
+            <div className="flex justify-center m-5">
+                <h1 className="text-2xl mx-auto">Lunch Management</h1>
+                <AddButton route="/invoice/selection" />
+            </div>
+
             {lunchList.map((lunch: Lunch) => (
                 <DisplayCard
                     key={lunch.id}

@@ -5,6 +5,7 @@ import { User } from "@/app/lib/data";
 import { getUsersPaginated } from "../lib/data";
 import { checkAuth } from "../lib/auth";
 import Pagination from "../ui/Pagination";
+import AddButton from "../ui/AddButton";
 
 type PageProps = {
     searchParams: Promise<{ page?: string }>;
@@ -25,6 +26,10 @@ export default async function Page({ searchParams }: PageProps) {
 
     return (
         <div className="m-4">
+            <div className="flex justify-center m-5">
+                <h1 className="text-2xl mx-auto">User Management</h1>
+                <AddButton route="/user/create" />
+            </div>
             {usersList.map((user: User) => (
                 <DisplayCard
                     key={user.id}

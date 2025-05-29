@@ -9,7 +9,7 @@ export default async function Page() {
         <form action={getPayingPerson}>
             <select name="users" id="users" multiple>
                 <option value="" disabled>
-                    Select a giver
+                    Select the atendees
                 </option>
                 {users.map((user) => (
                     <option
