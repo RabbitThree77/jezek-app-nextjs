@@ -7,6 +7,7 @@ import { deleteLunch } from "../lib/actions";
 
 import Pagination from "../ui/Pagination";
 import AddButton from "../ui/AddButton";
+import { LunchDisplayCard } from "../ui/LunchDisplayCard";
 
 export default async function Page({
     searchParams,
@@ -30,17 +31,14 @@ export default async function Page({
             </div>
 
             {lunchList.map((lunch: Lunch) => (
-                <DisplayCard
+                <LunchDisplayCard
                     key={lunch.id}
                     id={lunch.id}
-                    text={
-                        lunch.title +
-                        " - " +
-                        new Date(lunch.date).toISOString().slice(0, 10)
-                    }
+                    text={lunch.title}
                     editRoute="/lunch/edit"
                     deleteFunction={deleteLunch}
-                ></DisplayCard>
+                    subtext={new Date(lunch.date).toISOString().slice(0, 10)}
+                ></LunchDisplayCard>
             ))}
             <Pagination page={page} totalPages={totalPages}></Pagination>
         </div>
