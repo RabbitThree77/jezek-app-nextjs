@@ -161,6 +161,7 @@ export async function getLedgerItemWithNames(id: number) {
 export async function getLunchById(id: number) {
   const lunches = await sql.query("SELECT * FROM lunches WHERE id= $1", [id])
   const lunch = lunches[0] as Lunch
+  console.log(lunch)
   return lunch
 }
 

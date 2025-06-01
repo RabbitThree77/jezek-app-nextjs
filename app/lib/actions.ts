@@ -135,5 +135,5 @@ export async function deleteLunch(id: number) {
 
 export async function editLunch(id: number) {
     await deleteLunch(id)
-    redirect("invoice/selection")
+    redirect("/invoice/selection")
 }
