@@ -96,7 +96,7 @@ const exectutionSchema = z.object({
 
 /** pass the attendees with the one who is paying*/
 export async function executeLunchCreate(atendees: number[], formdata: FormData) {
-    const {payer_id, title} = exectutionSchema.parse({
+    let {payer_id, title} = exectutionSchema.parse({
         payer_id: formdata.get("payerId"),
         title: formdata.get("title")
     })
@@ -104,6 +104,10 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
     const indx = atendeesNoPayer.indexOf(payer_id)
     if (indx > -1) {
       atendeesNoPayer.splice(indx, 1);
+    }
+
+    if (title == "") {
+        title = "lunch"
     }
 
     const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3) RETURNING id", [payer_id, atendees, title])) as unknown as [{id: number}])
@@ -119,6 +123,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
         await sql.query("INSERT INTO ledger (giver_id, reciever_id, lunch_id) VALUES ($1, $2, $3)", [payer_id, id, lunch_id[0].id])
     }
     // redirect('/invoice/selection')
+    redirect("/lunch")
 }
 
 

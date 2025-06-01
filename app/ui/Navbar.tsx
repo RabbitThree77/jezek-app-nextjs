@@ -13,6 +13,9 @@ const Navbar = () => {
                 <li>
                     <Link href="/user">Users Management</Link>
                 </li>
+                <li>
+                    <Link href="/invoice/selection">Add a Lunch</Link>
+                </li>
             </ul>
         </nav>
     );
