@@ -19,11 +19,16 @@ export default async function Page({
     }
     const bindExecuteLunch = executeLunchCreate.bind(null, atendees);
 
+    const now = new Date().toISOString().split("T")[0];
+    console.log("Now:");
+    console.log(now);
+
     return (
         <LunchForm
             users={atendeeUsers}
             defaultPayer={payerId}
             atendees={atendeesNum}
+            time={now}
         />
     );
 }

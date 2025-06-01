@@ -33,3 +33,8 @@ select::-webkit-scrollbar-thumb {
   background: white;
   border-radius: 5rem;
 }
+
+
+input {
+  color-scheme: dark;
+}

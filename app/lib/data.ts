@@ -26,7 +26,8 @@ export type Lunch = {
   id: number,
   people_ids: number[],
   title: string,
-  payer_id: number
+  payer_id: number,
+  date: string
 }
 
 export async function getAllUsers(): Promise<Array<User>> {

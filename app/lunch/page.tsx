@@ -33,7 +33,11 @@ export default async function Page({
                 <DisplayCard
                     key={lunch.id}
                     id={lunch.id}
-                    text={lunch.title}
+                    text={
+                        lunch.title +
+                        " - " +
+                        new Date(lunch.date).toISOString().slice(0, 10)
+                    }
                     editRoute="/lunch/edit"
                     deleteFunction={deleteLunch}
                 ></DisplayCard>

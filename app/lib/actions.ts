@@ -90,15 +90,17 @@ export async function createLunch(formData: FormData) {
 
 const exectutionSchema = z.object({
     payer_id: z.coerce.number(),
-    title: z.string()
+    title: z.string(),
+    date: z.string()
 })
 
 
 /** pass the attendees with the one who is paying*/
 export async function executeLunchCreate(atendees: number[], formdata: FormData) {
-    let {payer_id, title} = exectutionSchema.parse({
+    let {payer_id, title, date} = exectutionSchema.parse({
         payer_id: formdata.get("payerId"),
-        title: formdata.get("title")
+        title: formdata.get("title"),
+        date: formdata.get("date")
     })
     const atendeesNoPayer = [...atendees]
     const indx = atendeesNoPayer.indexOf(payer_id)
@@ -110,7 +112,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
         title = "lunch"
     }
 
-    const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title) VALUES ($1, $2, $3) RETURNING id", [payer_id, atendees, title])) as unknown as [{id: number}])
+    const lunch_id = ((await sql.query("INSERT INTO lunches (payer_id, people_ids, title, date) VALUES ($1, $2, $3, $4) RETURNING id", [payer_id, atendees, title, date])) as unknown as [{id: number}])
     console.log("lunch_id: ", lunch_id)
     for (const id of atendees) {
         console.log(typeof id)

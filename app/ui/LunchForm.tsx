@@ -8,10 +8,12 @@ export default function LunchForm({
     users,
     defaultPayer,
     atendees,
+    time,
 }: {
     users: User[];
     defaultPayer: number;
     atendees: number[];
+    time: string;
 }) {
     const bindSubmit = executeLunchCreate.bind(null, atendees);
     console.log(atendees);
@@ -49,6 +51,16 @@ export default function LunchForm({
                     name="title"
                     defaultValue="lunch"
                     className="border-1 border-neutral-600 rounded text-center"
+                />
+                <br />
+                <label htmlFor="date">When was this lunch?</label>
+                <br />
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    defaultValue={time}
+                    className="border-1 border-neutral-600 rounded"
                 />
                 <br />
                 <button
