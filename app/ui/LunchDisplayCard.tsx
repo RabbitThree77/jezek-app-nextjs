@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { getUserById, getUsersById } from "../lib/data";
+import { ChevronDown, ChevronLeft } from "lucide-react";
 
 export const LunchDisplayCard = ({
     id,
@@ -64,7 +65,14 @@ export const LunchDisplayCard = ({
                     <h3 className="text-sm text-neutral-400">{subtext}</h3>
                 </div>
 
-                <div className="flex space-x-2"></div>
+                <div className="flex space-x-2">
+                    {!isExpanded && (
+                        <ChevronLeft size={32} className="text-neutral-500" />
+                    )}
+                    {isExpanded && (
+                        <ChevronDown size={32} className="text-neutral-500" />
+                    )}
+                </div>
             </div>
             {isPending && <h3>Loading...</h3>}
             {isExpanded && payer && (
