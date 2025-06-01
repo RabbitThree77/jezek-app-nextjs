@@ -167,5 +167,10 @@ export async function getLunchById(id: number) {
 }
 
 
+export function toEuropeanDate(inp: string) {
+  const iso = new Date(inp).toISOString().slice(0, 10)
+  const [year, month, day] = iso.split("-")
+  return `${day}-${month}-${year}`
+}
 
 

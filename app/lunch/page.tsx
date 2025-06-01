@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { checkAuth } from "../lib/auth";
-import { getLunchesPaginated, Lunch } from "../lib/data";
+import { getLunchesPaginated, Lunch, toEuropeanDate } from "../lib/data";
 import { DisplayCard } from "../ui/DisplayCard";
 
 import { deleteLunch } from "../lib/actions";
@@ -24,7 +24,7 @@ export default async function Page({
     const { lunchList, totalPages } = await getLunchesPaginated(page);
 
     return (
-        <div className="m-4">
+        <div className="m-4 pb-9">
             <div className="flex justify-center m-5">
                 <h1 className="text-2xl mx-auto">Lunch Management</h1>
                 <AddButton route="/invoice/selection" />
@@ -37,7 +37,7 @@ export default async function Page({
                     text={lunch.title}
                     editRoute="/lunch/edit"
                     deleteFunction={deleteLunch}
-                    subtext={new Date(lunch.date).toISOString().slice(0, 10)}
+                    subtext={toEuropeanDate(lunch.date)}
                 ></LunchDisplayCard>
             ))}
             <Pagination page={page} totalPages={totalPages}></Pagination>
