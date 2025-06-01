@@ -1,3 +1,5 @@
+"use server"
+
 import { Client, neon } from "@neondatabase/serverless";
 import { use } from "react";
 
@@ -62,6 +64,14 @@ export async function getUserById(id: number) {
     const users = resp as User[]
     console.log(users)
     return users[0]
+}
+
+export async function getUsersById(ids: number[]) {
+  const placeholder = ids.map((_, i) => `$${i + 1}`).join(",")
+  const query = `SELECT * FROM users WHERE id IN (${placeholder})`
+  const resp = await sql.query(query, ids)
+  const users = resp as User[]
+  return users
 }
 
 export async function getUserByName(name: string) {
@@ -167,7 +177,7 @@ export async function getLunchById(id: number) {
 }
 
 
-export function toEuropeanDate(inp: string) {
+export async function toEuropeanDate(inp: string) {
   const iso = new Date(inp).toISOString().slice(0, 10)
   const [year, month, day] = iso.split("-")
   return `${day}-${month}-${year}`

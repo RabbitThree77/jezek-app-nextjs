@@ -30,14 +30,16 @@ export default async function Page({
                 <AddButton route="/invoice/selection" />
             </div>
 
-            {lunchList.map((lunch: Lunch) => (
+            {lunchList.map(async (lunch: Lunch) => (
                 <LunchDisplayCard
                     key={lunch.id}
                     id={lunch.id}
                     text={lunch.title}
                     editRoute="/lunch/edit"
                     deleteFunction={deleteLunch}
-                    subtext={toEuropeanDate(lunch.date)}
+                    subtext={await toEuropeanDate(lunch.date)}
+                    payerId={lunch.payer_id}
+                    atendees={lunch.people_ids}
                 ></LunchDisplayCard>
             ))}
             <Pagination page={page} totalPages={totalPages}></Pagination>
