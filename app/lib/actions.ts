@@ -62,6 +62,7 @@ export async function getPayingPerson(formData: FormData) {
 
 export async function deleteUser(id: number) {
     await sql.query("DELETE FROM users WHERE id = $1", [id])
+    revalidatePath("/user")
 }
 
 const EditUserSchema = z.object({
@@ -131,6 +132,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
 
 export async function deleteLunch(id: number) {
     await sql.query("DELETE FROM lunches WHERE id= $1", [id])
+    revalidatePath("/lunch")
 }
 
 
