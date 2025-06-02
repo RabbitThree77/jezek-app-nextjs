@@ -67,7 +67,7 @@ export async function getUserById(id: number) {
     return users[0]
 }
 
-export const cachedUserById = unstable_cache(async (id: number) => {return await getUserById(id)}, [], {tags: ["user"], revalidate: 120})
+export const cachedUserById = unstable_cache(async (id: number) => {return await getUserById(id)}, [""], {tags: ["user"], revalidate: 120})
 
 export async function getUsersById(ids: number[]) {
   const placeholder = ids.map((_, i) => `$${i + 1}`).join(",")
@@ -78,7 +78,7 @@ export async function getUsersById(ids: number[]) {
 }
 
 export async function fetchUserClientId(id: number) {
-  return await cachedUserById(id)
+  return await (unstable_cache(async (id: number) => {return await getUserById(id)}, [`user-${id}`], {tags: ["user"], revalidate: 120}))(id)
 }
 
 export const cachedUsersById = unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
@@ -90,7 +90,8 @@ export async function getUserByName(name: string) {
 }
 
 export async function fetchUsersClientId(ids: number[]) {
-  return await cachedUsersById(ids)
+  console.log("here we cache the bullshit motherfucker")
+  return await (unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [`users-${ids}`], {tags: ["user"], revalidate: 120}))(ids)
 }
 
 
