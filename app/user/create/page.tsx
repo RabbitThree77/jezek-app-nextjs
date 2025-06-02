@@ -12,7 +12,7 @@ export default async function Page() {
                     type="text"
                     name="name"
                     id="name"
-                    className="border-1 border-neutral-600 rounded"
+                    className="border-1 border-neutral-600 rounded text-center"
                 />
                 <br />
                 <button

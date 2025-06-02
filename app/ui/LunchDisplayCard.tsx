@@ -32,7 +32,8 @@ export const LunchDisplayCard = ({
     const router = useRouter();
 
     const editFunc = () => {
-        router.push(`${editRoute}/${id}`);
+        setPopup(true);
+        // router.push(`${editRoute}/${id}`);
     };
     const deleteFunc = () => {
         deleteFunction(id);
@@ -42,6 +43,7 @@ export const LunchDisplayCard = ({
     const [atendeesNames, setAtendeesnames] = useState<string[] | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isPending, startTransition] = useTransition();
+    const [popup, setPopup] = useState(false);
 
     const expand = () => {
         if (!isExpanded && !payer) {
@@ -101,6 +103,40 @@ export const LunchDisplayCard = ({
                         >
                             Delete
                         </button>
+                    </div>
+                </div>
+            )}
+            {popup && (
+                <div className="relative z-10">
+                    <div className="fixed inset-0 transition-opacity">
+                        <div className="flex w-full h-full justify-center items-center">
+                            <div className="bg-neutral-800 border-2 border-red-500 rounded-xl text-center overflow-hidden max-w-[80%] p-5">
+                                <p>
+                                    We will delete the object and you will have
+                                    to remake it entirely, <br />
+                                    Are you sure?
+                                </p>
+
+                                <div className="flex space-x-8 w-full justify-center mt-8">
+                                    <button
+                                        className="pl-4 pr-4 pt-2 pb-2 border-1 border-white rounded"
+                                        onClick={() => {
+                                            setPopup(false);
+                                        }}
+                                    >
+                                        Back
+                                    </button>
+                                    <button
+                                        className="pl-4 pr-4 pt-2 pb-2 bg-red-500 rounded"
+                                        onClick={() => {
+                                            router.push(`/invoice/selection`);
+                                        }}
+                                    >
+                                        I understand
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

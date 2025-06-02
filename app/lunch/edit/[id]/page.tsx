@@ -13,15 +13,22 @@ export default async function Page({
     const updateWithId = editLunch.bind(null, id);
 
     return (
-        <form action={updateWithId}>
-            <h1>
-                This will permanently delete the current lunch and send you to
-                remake it again. Are you sure?
-            </h1>
-            <p>Paid by {(await getUserById(lunch.payer_id)).name}</p>
-            <p>Title: {lunch.title}</p>
+        <div className="w-full h-screen flex justify-center items-center text-center">
+            <form action={updateWithId}>
+                <h1>
+                    This will permanently delete the current lunch and send you
+                    to remake it again. Are you sure?
+                </h1>
+                <p>Paid by {(await getUserById(lunch.payer_id)).name}</p>
+                <p>Title: {lunch.title}</p>
 
-            <button type="submit">I know what I'm doing</button>
-        </form>
+                <button
+                    type="submit"
+                    className="pl-4 pr-4 pt-2 pb-2 bg-red-500 rounded"
+                >
+                    I know what I'm doing
+                </button>
+            </form>
+        </div>
     );
 }
