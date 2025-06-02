@@ -1,6 +1,7 @@
 "use server"
 
 import { Client, neon } from "@neondatabase/serverless";
+import { unstable_cache } from "next/cache";
 import { use } from "react";
 
 const sql = neon(process.env.DATABASE_URL as string);
@@ -66,6 +67,8 @@ export async function getUserById(id: number) {
     return users[0]
 }
 
+export const cachedUserById = unstable_cache(async (id: number) => {return await getUserById(id)}, [], {tags: ["user"], revalidate: 120})
+
 export async function getUsersById(ids: number[]) {
   const placeholder = ids.map((_, i) => `$${i + 1}`).join(",")
   const query = `SELECT * FROM users WHERE id IN (${placeholder})`
@@ -73,6 +76,8 @@ export async function getUsersById(ids: number[]) {
   const users = resp as User[]
   return users
 }
+
+export const cachedUsersById = unstable_cache(async (ids: number[]) => {return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
 
 export async function getUserByName(name: string) {
   const resp = await sql.query("SELECT * FROM users WHERE name = $1", [name])

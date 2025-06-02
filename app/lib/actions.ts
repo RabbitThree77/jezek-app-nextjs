@@ -4,7 +4,7 @@ import { neon } from '@neondatabase/serverless';
 import {number, string, z} from 'zod';
 import { selectPayer } from './data';
 import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { title } from 'process';
 
 
@@ -63,6 +63,7 @@ export async function getPayingPerson(formData: FormData) {
 export async function deleteUser(id: number) {
     await sql.query("DELETE FROM users WHERE id = $1", [id])
     revalidatePath("/user")
+    revalidateTag("user")
 }
 
 const EditUserSchema = z.object({
@@ -76,6 +77,7 @@ export async function editUser(id: number, formData: FormData) {
     await sql.query("UPDATE users SET name = $1 WHERE id= $2", [name, id])
 
     revalidatePath("/user")
+    revalidateTag("user")
     redirect("/user")
 }
 

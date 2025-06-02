@@ -2,7 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { getUserById, getUsersById } from "../lib/data";
+import {
+    cachedUserById,
+    cachedUsersById,
+    getUserById,
+    getUsersById,
+} from "../lib/data";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 export const LunchDisplayCard = ({
@@ -41,8 +46,8 @@ export const LunchDisplayCard = ({
     const expand = () => {
         if (!isExpanded && !payer) {
             startTransition(async () => {
-                const user = await getUserById(payerId);
-                const atendded = await getUsersById(atendees);
+                const user = await cachedUserById(payerId);
+                const atendded = await cachedUsersById(atendees);
                 const humans = atendded.map((a) => a.name);
 
                 setAtendeesnames(humans);

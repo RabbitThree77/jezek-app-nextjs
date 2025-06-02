@@ -14,9 +14,11 @@ export default async function Page({
     const updateUserWithId = editUser.bind(null, id);
 
     return (
-        <form action={updateUserWithId}>
-            <input type="text" name="name" defaultValue={preData.name} />
-            <button type="submit">Submit</button>
-        </form>
+        <div>
+            <form action={updateUserWithId}>
+                <input type="text" name="name" defaultValue={preData.name} />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     );
 }
