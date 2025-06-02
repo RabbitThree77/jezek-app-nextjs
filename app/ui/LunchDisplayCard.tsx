@@ -5,6 +5,8 @@ import { useState, useTransition } from "react";
 import {
     cachedUserById,
     cachedUsersById,
+    fetchUserClientId,
+    fetchUsersClientId,
     getUserById,
     getUsersById,
 } from "../lib/data";
@@ -48,8 +50,8 @@ export const LunchDisplayCard = ({
     const expand = () => {
         if (!isExpanded && !payer) {
             startTransition(async () => {
-                const user = await cachedUserById(payerId);
-                const atendded = await cachedUsersById(atendees);
+                const user = await fetchUserClientId(payerId);
+                const atendded = await fetchUsersClientId(atendees);
                 const humans = atendded.map((a) => a.name);
 
                 setAtendeesnames(humans);

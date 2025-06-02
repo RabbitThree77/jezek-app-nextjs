@@ -77,12 +77,20 @@ export async function getUsersById(ids: number[]) {
   return users
 }
 
-export const cachedUsersById = unstable_cache(async (ids: number[]) => {return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
+export async function fetchUserClientId(id: number) {
+  return await cachedUserById(id)
+}
+
+export const cachedUsersById = unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
 
 export async function getUserByName(name: string) {
   const resp = await sql.query("SELECT * FROM users WHERE name = $1", [name])
   const users = resp as User[]
   return users[0]
+}
+
+export async function fetchUsersClientId(ids: number[]) {
+  return await cachedUsersById(ids)
 }
 
 
