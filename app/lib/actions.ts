@@ -6,6 +6,7 @@ import { selectPayer } from './data';
 import { redirect } from 'next/navigation';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { title } from 'process';
+import { checkAuth } from './auth';
 
 
 const FormSchema = z.object({
@@ -29,6 +30,7 @@ const CreateUser = FormSchema.omit({id: true})
 const sql = neon(process.env.DATABASE_URL as string);
 
 export async function createUser(formData: FormData) {
+    await checkAuth()
     const {name} = CreateUser.parse({
         name: formData.get("name")
     })
@@ -38,6 +40,7 @@ export async function createUser(formData: FormData) {
 }
 
 export async function createInvoiceItem(formData: FormData) {
+    await checkAuth()
     const {giver_id, reciever_id} = InvoiceFormSchema.parse({
         giver_id: formData.get("giverId"),
         reciever_id: formData.get("recieverId")
@@ -48,6 +51,7 @@ export async function createInvoiceItem(formData: FormData) {
 }
 
 export async function getPayingPerson(formData: FormData) {
+    await checkAuth()
     const users = formData.getAll("users")
     const {payer, atendees} = await selectPayer(users as Array<string>)
     const params = new URLSearchParams
@@ -61,6 +65,7 @@ export async function getPayingPerson(formData: FormData) {
 
 
 export async function deleteUser(id: number) {
+    await checkAuth()
     await sql.query("DELETE FROM users WHERE id = $1", [id])
     revalidatePath("/user")
     revalidateTag("user")
@@ -71,6 +76,7 @@ const EditUserSchema = z.object({
 })
 
 export async function editUser(id: number, formData: FormData) {
+    await checkAuth()
     const {name} = EditUserSchema.parse({
         name: formData.get("name")
     })
@@ -82,6 +88,7 @@ export async function editUser(id: number, formData: FormData) {
 }
 
 export async function createLunch(formData: FormData) {
+    await checkAuth()
     const {payer_id, atendees_ids, title} = CreateLunchShema.parse({
         payer_id: formData.get("payerId"),
         atendees_ids: formData.getAll("atendeesIds"),
@@ -100,6 +107,7 @@ const exectutionSchema = z.object({
 
 /** pass the attendees with the one who is paying*/
 export async function executeLunchCreate(atendees: number[], formdata: FormData) {
+    await checkAuth()
     let {payer_id, title, date} = exectutionSchema.parse({
         payer_id: formdata.get("payerId"),
         title: formdata.get("title"),
@@ -133,6 +141,7 @@ export async function executeLunchCreate(atendees: number[], formdata: FormData)
 
 
 export async function deleteLunch(id: number) {
+    await checkAuth()
     await sql.query("DELETE FROM lunches WHERE id= $1", [id])
     revalidatePath("/lunch")
 }
@@ -140,6 +149,7 @@ export async function deleteLunch(id: number) {
 
 
 export async function editLunch(id: number) {
+    await checkAuth()
     await deleteLunch(id)
     redirect("/invoice/selection")
 }

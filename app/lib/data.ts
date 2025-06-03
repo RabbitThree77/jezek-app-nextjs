@@ -3,6 +3,7 @@
 import { Client, neon } from "@neondatabase/serverless";
 import { unstable_cache } from "next/cache";
 import { use } from "react";
+import { checkAuth } from "./auth";
 
 const sql = neon(process.env.DATABASE_URL as string);
 
@@ -34,6 +35,7 @@ export type Lunch = {
 }
 
 export async function getAllUsers(): Promise<Array<User>> {
+  	await checkAuth()
     const resp = await sql.query("SELECT * FROM users");
     console.log(resp)
     return resp as User[]
@@ -67,7 +69,7 @@ export async function getUserById(id: number) {
     return users[0]
 }
 
-export const cachedUserById = unstable_cache(async (id: number) => {return await getUserById(id)}, [""], {tags: ["user"], revalidate: 120})
+// export const cachedUserById = unstable_cache(async (id: number) => {return await getUserById(id)}, [""], {tags: ["user"], revalidate: 120})
 
 export async function getUsersById(ids: number[]) {
   const placeholder = ids.map((_, i) => `$${i + 1}`).join(",")
@@ -78,10 +80,11 @@ export async function getUsersById(ids: number[]) {
 }
 
 export async function fetchUserClientId(id: number) {
+	await checkAuth()
   return await (unstable_cache(async (id: number) => {return await getUserById(id)}, [`user-${id}`], {tags: ["user"], revalidate: 120}))(id)
 }
 
-export const cachedUsersById = unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
+// export const cachedUsersById = unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [], {tags: ["user"], revalidate: 120})
 
 export async function getUserByName(name: string) {
   const resp = await sql.query("SELECT * FROM users WHERE name = $1", [name])
@@ -90,12 +93,13 @@ export async function getUserByName(name: string) {
 }
 
 export async function fetchUsersClientId(ids: number[]) {
-  console.log("here we cache the bullshit motherfucker")
+	await checkAuth()
   return await (unstable_cache(async (ids: number[]) => {console.log("cached");return await getUsersById(ids)}, [`users-${ids}`], {tags: ["user"], revalidate: 120}))(ids)
 }
 
 
 export async function selectPayer(participants: Array<string>) {
+	await checkAuth()
 
     const placeholder = participants.map((_, i) => `$${i + 1}`).join(',')
 
@@ -159,8 +163,9 @@ export async function selectPayer(participants: Array<string>) {
 }
 
 export async function getUsersPaginated(page: number) {
+	await checkAuth()
 
-    const users = await sql.query("SELECT * FROM users ORDER BY id DESC LIMIT 10 OFFSET $1", [(page - 1) * 10]);
+    const users = await sql.query("SELECT * FROM users ORDER BY LOWER(name) ASC LIMIT 10 OFFSET $1", [(page - 1) * 10]);
     const usersList = users as User[];
     const pageQuery = await sql.query("SELECT COUNT(*) FROM users")
     const totalPages = Math.ceil(Number(pageQuery[0].count)/10)
@@ -169,6 +174,7 @@ export async function getUsersPaginated(page: number) {
 }
 
 export async function getLunchesPaginated(page: number) {
+	await checkAuth()
   const lunches = await sql.query("SELECT * FROM lunches ORDER BY id DESC LIMIT 10 OFFSET $1", [(page - 1) * 10])
   const lunchList = lunches as Lunch[]
   const pageQuery = await sql.query("SELECT COUNT(*) FROM lunches")
@@ -179,11 +185,13 @@ export async function getLunchesPaginated(page: number) {
 }
 
 export async function getLedgerItemWithNames(id: number) {
+	await checkAuth()
   const item = await sql.query("SELECT i.*, u1.name AS giver_name, u2.name AS reciever_name FROM ledger i LEFT JOIN users u1 ON i.giver_id = u1.id LEFT JOIN users u2 ON i.reciever_id = u2.id WHERE i.id = $1", [id])
   return item[0]
 }
 
 export async function getLunchById(id: number) {
+	await checkAuth()
   const lunches = await sql.query("SELECT * FROM lunches WHERE id= $1", [id])
   const lunch = lunches[0] as Lunch
   console.log(lunch)
