@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
-	cachedUserById,
-	cachedUsersById,
 	fetchUserClientId,
 	fetchUsersClientId,
 	getUserById,
