@@ -205,4 +205,13 @@ export async function toEuropeanDate(inp: string) {
   return `${day}-${month}-${year}`
 }
 
+export async function getLunchNamesNoDuplicates() {
+	await checkAuth()
+	const namesRaw = await sql.query("SELECT DISTINCT title FROM lunches")
+  const names = namesRaw as {title: string}[]
+	return names
+
+
+}
+
 
