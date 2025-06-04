@@ -3,13 +3,16 @@ import { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
     const token = req.cookies.get("auth_token")?.value;
-    console.log(token);
+    const message = req.cookies.get("informed")?.value;
     const isLoggedIn = token === process.env.SHARED_SECRET;
     console.log(process.env.SHARED_SECRET)
+    
+    const { pathname } = req.nextUrl;
+    
 
     return NextResponse.next()
 
-    const { pathname } = req.nextUrl;
+    
 
     const isPublicPath = pathname.startsWith('/login') || pathname.startsWith('/api')
 

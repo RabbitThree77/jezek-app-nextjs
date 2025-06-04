@@ -207,7 +207,7 @@ export async function toEuropeanDate(inp: string) {
 
 export async function getLunchNamesNoDuplicates() {
 	await checkAuth()
-	const namesRaw = await sql.query("SELECT DISTINCT title FROM lunches")
+	const namesRaw = await sql.query("SELECT DISTINCT title FROM lunches ORDER BY title ASC")
   const names = namesRaw as {title: string}[]
 	return names
 

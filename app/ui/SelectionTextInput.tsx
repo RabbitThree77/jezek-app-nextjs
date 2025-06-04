@@ -9,7 +9,7 @@ export const SelectionTextInput = ({ name }: { name: string }) => {
 		null
 	);
 	const [isPending, startTransition] = useTransition();
-	const [inputValue, setInputValue] = useState("gimme compensation!");
+	const [inputValue, setInputValue] = useState("");
 	const [open, setOpen] = useState(false);
 
 	const expand = async () => {
