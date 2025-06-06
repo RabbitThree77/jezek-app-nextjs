@@ -214,4 +214,12 @@ export async function getLunchNamesNoDuplicates() {
 
 }
 
+export async function getCounts() {
+  await checkAuth()
+  const lunchCountRaw = await sql.query("SELECT COUNT(*) FROM lunches");
+  const usersRegisteredRaw = await sql.query("SELECT COUNT(*) FROM users")
+  const lunchCount = (lunchCountRaw as {count: number}[])[0]
+  const userCount = (usersRegisteredRaw as {count: number}[])[0]
+  return {lunches: lunchCount.count, users: userCount.count}
 
+}

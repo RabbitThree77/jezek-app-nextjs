@@ -1,28 +1,25 @@
 import Image from "next/image";
-import { getAllUsers } from "./lib/data";
+import { getAllUsers, getCounts } from "./lib/data";
 import Link from "next/link";
 import { checkAuth } from "./lib/auth";
 
 export default async function Home() {
-  await checkAuth();
-  const users = getAllUsers();
-  return (
-    <div className="w-full p-5">
-      <div className="flex space-x-4 p-2">
-        <Link
-          href="/user"
-          className="bg-white pl-10 pr-10 pt-5 pb-5 rounded text-black hover:scale-110"
-        >
-          Manage Users
-        </Link>
-        <Link
-          href="/invoice"
-          className="bg-white pl-10 pr-10 pt-5 pb-5 rounded text-black hover:scale-110"
-        >
-          Manage the Ledger
-        </Link>
-      </div>
-      <hr className="border-neutral-600" />
-    </div>
-  );
+	await checkAuth();
+	const counts = await getCounts();
+	return (
+		<div className="w-full text-center p-5 flex flex-col md:flex-row justify-center space-y-5">
+			<div className="w-full flex justify-center">
+				<div className="border-1 border-neutral-700 rounded-2xl p-5 max-w-80 max-h-48 h-48">
+					<h1 className="text-5xl">Lunches Eaten</h1>
+					<h1 className="text-5xl">{counts.lunches}</h1>
+				</div>
+			</div>
+			<div className="w-full flex justify-center">
+				<div className="border-1 border-neutral-700 rounded-2xl p-5 max-w-80 max-h-48 h-48">
+					<h1 className="text-5xl">Users Registered</h1>
+					<h1 className="text-5xl">{counts.users}</h1>
+				</div>
+			</div>
+		</div>
+	);
 }
