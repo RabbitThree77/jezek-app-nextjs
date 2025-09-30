@@ -223,3 +223,69 @@ export async function getCounts() {
   return {lunches: lunchCount.count, users: userCount.count}
 
 }
+
+
+export async function getUserLunches(userId: number) {
+  await checkAuth()
+  const lunches = await sql.query("SELECT * FROM lunches WHERE $1 = ANY(people_ids)", [userId]);
+  const l = lunches as {title: string}[]
+  return l
+}
+
+
+
+export async function makeTable(participants: Array<string>) {
+	await checkAuth()
+
+    const placeholder = participants.map((_, i) => `$${i + 1}`).join(',')
+
+    let query = `SELECT * FROM users WHERE name IN (${placeholder})`
+    const resp = await sql.query(query, participants)
+    console.log(resp)
+    const users = resp as Array<User>
+    users.map((u) => {u.id})
+    const userIds = users.map(item => item.id)
+
+    const query2 = `select * from ledger where giver_id IN (${placeholder}) AND reciever_id IN (${placeholder})`
+
+    const resp2 = await sql.query(query2, userIds) 
+    const ledgerItems = resp2 as Array<LedgerItem>
+    if (ledgerItems.length < 1) {
+      const payer = participants[Math.floor(Math.random() * participants.length)]
+      const atendees = await Promise.all(participants.map(u => getUserByName(u)))
+      console.log("WARNING THIS IS BAD")
+      //return {payer: payer, atendees: atendees}
+    }
+    console.log(users)
+
+    let givers: { [key: string]: number} = {}
+    let recievers: { [key: string]: number} = {}
+
+    console.log("givers: ", givers)
+    console.log("recievers: ", recievers)
+    console.log("ledgerItems: ", ledgerItems)
+
+    for (let item of ledgerItems) {
+        givers[item.giver_id.toString()] = (givers[item.giver_id.toString()] || 0) + 1;
+        recievers[item.reciever_id.toString()] = (recievers[item.reciever_id.toString()] || 0) + 1;
+    }
+
+    const allIds = new Set([...Object.keys(recievers), ...Object.keys(givers)]);
+    console.log(allIds)
+    let result: { [id: string]: number } = {}
+
+    for (const id of allIds) {
+        const recieved = recievers[id] || 0
+        const given = givers[id] || 0
+        result[id] = recieved - given
+    }
+
+    let resfr: {  [name: string]: number} = {}
+
+    for (const id of Object.keys(result)) {
+      let name = await getUserById(Number(id))
+      resfr[name.name] = result[id]
+    }
+
+    return resfr
+}

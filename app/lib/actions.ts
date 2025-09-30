@@ -59,6 +59,9 @@ export async function getPayingPerson(formData: FormData) {
     for (let i of atendees) {
         params.append("atendees", i.id.toString())
     }
+    for (let i of atendees) {
+        params.append("names", i.name)
+    }
     console.log(payer)
     redirect(`/generate?${params.toString()}`)
 }

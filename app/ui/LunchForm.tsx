@@ -4,23 +4,31 @@ import { useState } from "react";
 import { User } from "../lib/data";
 import { executeLunchCreate } from "../lib/actions";
 import { SelectionTextInput } from "./SelectionTextInput";
+import { TokenTable } from "./TokenTable";
 
 export default function LunchForm({
 	users,
 	defaultPayer,
 	atendees,
 	time,
+	table
 }: {
 	users: User[];
 	defaultPayer: number;
 	atendees: number[];
 	time: string;
+	table: { [id: string]: number }
 }) {
 	const bindSubmit = executeLunchCreate.bind(null, atendees);
 	console.log(atendees);
+	
 
 	return (
-		<div className="w-full h-screen flex justify-center items-center text-center">
+		<div>
+			
+			<div className="w-full h-screen flex flex-col justify-center items-center text-center">
+			<TokenTable table={table} />
+			<br />
 			<form action={bindSubmit} className="space-y-4">
 				<label htmlFor="payerId">Who will pay?</label>
 				<br />
@@ -75,5 +83,7 @@ export default function LunchForm({
 				<br />
 			</form>
 		</div>
+		</div>
+		
 	);
 }

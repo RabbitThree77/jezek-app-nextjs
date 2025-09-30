@@ -1,13 +1,14 @@
 import { executeLunchCreate } from "../lib/actions";
-import { getAllUsers, getUserByName } from "../lib/data";
+import { getAllUsers, getUserByName, makeTable } from "../lib/data";
 import LunchForm from "../ui/LunchForm";
+import { TokenTable } from "../ui/TokenTable";
 
 export default async function Page({
     searchParams,
 }: {
-    searchParams: Promise<{ payer: string; atendees: number[] }>;
+    searchParams: Promise<{ payer: string; atendees: number[], names: string[] }>;
 }) {
-    const { payer, atendees } = await searchParams;
+    const { payer, atendees, names } = await searchParams;
     const atendeesNum = atendees.map(Number);
     const payerId = (await getUserByName(payer)).id;
     const users = await getAllUsers();
@@ -23,12 +24,19 @@ export default async function Page({
     console.log("Now:");
     console.log(now);
 
+    const tData = await makeTable(names)
+
     return (
-        <LunchForm
+        <div>
+            <LunchForm
             users={atendeeUsers}
             defaultPayer={payerId}
             atendees={atendeesNum}
             time={now}
+            table={tData}
         />
+            
+        </div>
+        
     );
 }
