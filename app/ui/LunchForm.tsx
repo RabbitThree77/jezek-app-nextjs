@@ -24,7 +24,7 @@ export default function LunchForm({
 	
 
 	return (
-		<div>
+		<div className="pb-48">
 			
 			<div className="w-full h-screen flex flex-col justify-center items-center text-center">
 			<TokenTable table={table} />
@@ -81,6 +81,7 @@ export default function LunchForm({
 					Submit
 				</button>
 				<br />
+				
 			</form>
 		</div>
 		</div>
